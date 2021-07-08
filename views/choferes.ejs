@@ -1,0 +1,26 @@
+
+<%- include('templates/cabecera', {tituloweb: 'Listado de choferes'}) %>
+<script>const results = require('../routes/route');
+
+</script>
+ 
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">idchofer</th>
+        <th scope="col">usuarioChofer</th>
+     </tr>
+    </thead>
+    <tbody> 
+      <% results.forEach(chofer => { %>
+       
+        <tr>
+          <th scope="row"><%= chofer.idchofer %></th>
+          <th scope="row"><%= chofer.usuarioChofer %></th>
+        </tr>   
+        <% }) %>
+    </tbody>
+  </table>
+
+  <%- include('templates/footer') %>

@@ -1,0 +1,26 @@
+<%- include('templates/cabecera', {tituloweb: 'Inicio de Sesión'}) %>
+<script>const results = require('../routes/route');</script>
+ 
+
+<form class="container pt-3" action="/login-send" method='POST'>
+    
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Ingrese su usuario" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <span class="input-group-text" id="usuario" name="usuario">@andis.gob.ar</span>
+    </div>
+    <div class="input-group mb-3">
+       
+        <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+    
+    
+    <input type="button" value="Aceptar">
+    
+    
+</form>
+  
+  </div>
+<script>
+    
+</script>
+  <%- include('templates/footer') %>
