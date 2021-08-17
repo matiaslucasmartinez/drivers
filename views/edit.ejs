@@ -1,0 +1,64 @@
+<%- include('templates/cabecera', {tituloweb: 'Modificar cita'}) %>
+<script>
+const modifica = require('../routes/route');
+// console.log(modifica);
+
+</script>
+
+<div class="container ">
+  <h1 class=" justify-content-center text-center">Modificar Cita</h1>
+  <div class="row">
+    <div class="col ">
+      Fecha
+    </div>
+    <div class="col ">
+      Hora Inicio
+    </div>
+    <div class="col text-center">
+      Hora Fin
+    </div>
+    <div class="col text-center">
+      Chofer
+    </div>
+    <div class="col">
+      
+    </div>
+    <div class="col">
+      
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+        <!-- <div class="col text-center ">
+              <input type="text" value="" id="idCita" name="idCita" >  
+          </div> -->
+        <div class="col text-center">
+          <input id="fecha" name="fecha" type="date" value="date"/>
+        </div>
+        <div class="col text-center ">
+          <input id="inicio" type="time" name="inicio" value="<%= modifica.viajeInicio %>"  step="10" required>
+          
+        </div>
+        <div class="col text-center ">
+            <input id="fin" type="time" name="fin" value="<%= modifica.viajeFin %>"  step="10" required>
+            
+        </div>
+        <div class="col text-center ">
+              <!-- inicio seleccion chofer -->
+              <select name="conductor" id="conductor" required>
+                  <option value="<%= modifica.idchofer %>" ><%= modifica.usuarioChofer %></option>
+              </select>
+              <!-- fin seleccion chofer -->
+        </div>
+        <div class="col bg-secondary ">
+          <a href="/cita-modificada/<%= modifica.idCita %>" class="btn btn-primary">Guardar</a>    
+        </div>
+        <div class="col bg-primary">
+          <a href="/listar-cita" class="btn btn-secondary">Cancelar</a>  
+        </div>
+
+ </div>
+
+  <%- include('templates/footer') %>

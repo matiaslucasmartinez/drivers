@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const ldap = require('ldapjs');
 
 const conexion = require('../database/db');
+const { request } = require('express');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.get('/login', function(req,res){
@@ -11,37 +12,44 @@ router.get('/login', function(req,res){
 })
 
 // Inicio de ldap para logueo en AD
-router.post('/login-send', urlencodedParser, function(req, res){
-    console.log(usuario,password);
-    function credencialesAD(usuario, password){
-        const client = ldap.createClient({
-  url: ['ldap://127.0.0.1:1389', 'ldap://127.0.0.2:1389']
-});
-
-client.on('error', (err) => {
-  // handle connection error
-});
-
-client.bind(usuario, password, (err) => {
-    if(err){
-        console.log('error en el logueo'+err);
-    }else{
-        console.log('logueo exitoso');
-    }
+const client = ldap.createClient({
+    url: ['ldap://10.0.0.4:3268']
   });
+  
+  client.on('error', (err) => {
+    console.log('Error en cliente ldap:  '+err);
+  });
+
+  client.bind('webgdv', 'yU4yI5nY6nJ1_zS3z', (err) => {
+    
+    if(err){
+        console.log('error en logueo ldap:  '+err);
+    }else{
+        console.log('conexion ldap exitosa');
     }
-})
-// credencialesAD(usuario:"usuario",password:"contraseña"); Resisar esta linea, causa conflicto
-
-
+  }); 
+//buscar la parte que valida al usuario
 // Fin de ldap para logueo en AD
+
+//envia al index
 router.get('/', function(req,res){
     res.render('index');
 }); 
+//fin envia al index
 
+
+//mostras listado de choferes
 router.get('/calendario', function(req,res){
-    res.render('calendario');
-}); 
+    conexion.query('SELECT * FROM chofer', (error,results)=>{
+        if (error){
+            throw error;
+        }else{
+    res.render('calendario', {results:results});
+        }
+    });
+});
+//fin mostras listado de choferes
+
 
 router.get('/choferes-listar', (req,res)=>{
     conexion.query('SELECT * FROM chofer', (error,results)=>{
@@ -55,20 +63,98 @@ router.get('/choferes-listar', (req,res)=>{
     });
 });
 
+router.get('/listar-cita', (req,res)=>{
+    //; 
+    conexion.query('SELECT * FROM `cita` INNER JOIN chofer ON cita.idchofer= chofer.idchofer', (error,results)=>{
+        if (error){
+            console.log(error);
+        }else{
+            //console.log(results);
+            res.render('cita', {results:results}); 
+            
+        }
+    });
+});
+// inicio nueva cita
+
 router.post('/cita', urlencodedParser, function (req, res) {
-    console.log(req.body);
-    res.send(`Fecha tomada `);
-    const insertar = "INSERT INTO `cita` (`idCita`, `fecha`, `viajeInicio`, `viajeFin`, `idChofer`) VALUES (NULL, '"+ req.body.fecha +"', '"+ req.body.inicio +"', '"+ req.body.fin +"', 'choferPrueba2')"; 
+    //console.log(req.body);
+               
+        res.redirect('/listar-cita');
+    
+    const insertar = "INSERT INTO `cita` (`idCita`, `fecha`, `viajeInicio`, `viajeFin`, `idChofer`) VALUES (NULL, '"+ req.body.fecha +"', '"+ req.body.inicio +"', '"+ req.body.fin +"', '"+ req.body.conductor +"')"; 
    conexion.query(insertar, (error,results)=>{
        if (error){
-           throw error;
+           console.log(error);
        }else{
-           console.log(results);
+           //console.log(results);
              
            
        }
    });
-  })
+  });
+//fin nueva cita 
+
+
+//   modifcar cita
+router.get('/editar/:idCita', function (req, res) {
+    const idCita = req.params.idCita;
+   
+     const seleccionar = 'SELECT * FROM `cita` INNER JOIN chofer ON cita.idchofer= chofer.idchofer WHERE idCita=?'
+     //'SELECT * FROM `cita` WHERE idCita=?'
+     //
+     
+   conexion.query(seleccionar, [idCita], (error,results)=>{
+            if (error){
+                    console.log(error);
+                    }else{
+                //console.log(results);
+                res.render('edit', {modifica:results[0]}); 
+                        }   
+                     });
+     });
+
+
+// Fin modificar cita
+
+//Guardar cita modificada
+router.get('/cita-modificada/:idCita', function (req, res) {
+    const idCita = req.params.idCita;
+      console.log(req.params);
+    const seleccionar = "UPDATE `cita` SET `fecha` = '"+ req.body.fecha +"', `viajeInicio` = '"+ req.body.inicio +"', `viajeFin` = '"+ req.body.fin +"', `idChofer` = '"+ req.body.conductor +"' WHERE `cita`.`idCita` =?";
+    
+    conexion.query(seleccionar, [idCita], (error,results)=>{
+        if (error){
+            console.log(error);
+        }else{
+            // console.log(results);
+            res.redirect('/listar-cita'); 
+        }
+    });
+
+
+});
+//fin Guardar cita modificada
+
+//comienzo Eliminar cita
+router.get('/eliminar/:idCita', function (req, res) {
+    const idCita = req.params.idCita;
+      
+    const eliminar = "DELETE FROM `cita` WHERE `cita`.`idCita` =?";
+    
+    conexion.query(eliminar, [idCita], (error,results)=>{
+        if (error){
+            console.log(error);
+        }else{
+            
+             res.redirect('/listar-cita');
+        }
+    });
+
+
+});
+//fin Eliminar cita
+  
 
 
 

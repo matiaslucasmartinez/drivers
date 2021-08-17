@@ -1,32 +1,50 @@
-<%- include('templates/cabecera', {tituloweb: 'Página de inicio'}) %>
-
-<div id='calendar' ></div>
-
-<!-- Inicio Ventana Modal -->
+ <%- include('templates/cabecera', {tituloweb: 'Página de inicio'}) %>
+ <script>const results = require('../routes/route');</script>
+    <!-- Inicio Ventana Modal -->
 <!-- Button trigger modal -->
- <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#evento">
-    Launch demo modal
-</button> --> 
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#evento">Nuevo Viaje</button> 
 
-<!-- Modal -->
-<div class="modal fade" id="evento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary">Guardar</button>
-            </div>
-        </div>
-    </div>
-</div>
+  <!-- Modal -->
+  <div class="modal fade" id="evento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel"> Nuevo Viaje</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                
+                <form id="eventTitleInput" action="/cita" method="POST">
+                  
+                  <label for="fecha">Seleccione la fecha : </label><input id="fecha" name="fecha" type="date" value="date" required/> 
+                    <label> Hora Inicio Viaje</label><input id="inicio" type="time" name="inicio" value="11:45:00"  step="10" required>
+                    <label> Hora Fin Viaje</label><input id="fin" type="time" name="fin" value="11:45:00"  step="10" required>
+                    <!-- inicio seleccion chofer -->
+                    <select name="conductor" id="conductor" required>
+                      <option value="" >Seleccione</option>
+                      <% results.forEach(chofer => { %>
+                        
+                        <option value="<%= chofer.idchofer %>" ><%= chofer.usuarioChofer %></option>
+                      
+                        
+                      <% }) %></select>
+                    
+                    <!-- fin seleccion chofer -->
+                    <button id="saveButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exito">Guardar</button>
+                  </form>
+              </div>
+              <!-- div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                  <button type="button" class="btn btn-primary">Guardar</button>
+              </div> -->
+          </div>
+      </div>
+  </div>
+     
+  <!-- Fin Ventana Modal -->
 
-<!-- Fin Ventana Modal -->
-<script src="script.js"></script>
+  
+  
+<!-- Inicio del calendario -->
+<!-- Fin del calendario --> 
 <%- include('templates/footer') %>
