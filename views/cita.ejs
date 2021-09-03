@@ -1,9 +1,5 @@
 <%- include('templates/cabecera', {tituloweb: 'Citas tomadas'}) %>
-<script>
-cita.use('/', require('./routes/route'));
-
-
-</script>
+ 
 <div class="container ">
   <h1 class=" justify-content-center text-center">Listado de Citas</h1>
   <div class="row">
@@ -27,12 +23,26 @@ cita.use('/', require('./routes/route'));
     </div>
   </div>
 </div>
-<form action="/editar" method="POST">
+<form action="/editar" method="GET">
 <% results.forEach(cita => { %>
+  
+   
+  <% if (cita.fecha.getMonth() < 10) { 
+   
+   var mes = '0' + (cita.fecha.getMonth() +1) }
+   else{
+     
+      mes = cita.fecha.getMonth()+1;  }%> 
+   
+   <% if (cita.fecha.getDate() < 10) { 
+   
+   var dia = '0' + cita.fecha.getDate() } else{
+     var dia = cita.fecha.getDate()
+   }%>
 <div class="row">
   <div class="col text-center ">
-    <%= cita.fecha %>
-        
+    <input type="date" name="fecha" value="<%= cita.fecha.getFullYear()%>-<%=mes%>-<%=dia%>" disabled>
+    
   </div>
   <div class="col text-center ">
     <%= cita.viajeInicio %>
@@ -51,10 +61,10 @@ cita.use('/', require('./routes/route'));
     
   </div>
 </div>
+
 <% }) %>
 </form>
 </div> 
-
 
 
   <%- include('templates/footer') %></div>

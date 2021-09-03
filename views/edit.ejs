@@ -1,9 +1,5 @@
 <%- include('templates/cabecera', {tituloweb: 'Modificar cita'}) %>
-<script>
-const modifica = require('../routes/route');
-// console.log(modifica);
 
-</script>
 
 <div class="container ">
   <h1 class=" justify-content-center text-center">Modificar Cita</h1>
@@ -28,37 +24,46 @@ const modifica = require('../routes/route');
     </div>
   </div>
 </div>
-
-
-<div class="row">
-        <!-- <div class="col text-center ">
-              <input type="text" value="" id="idCita" name="idCita" >  
-          </div> -->
-        <div class="col text-center">
-          <input id="fecha" name="fecha" type="date" value="date"/>
-        </div>
-        <div class="col text-center ">
-          <input id="inicio" type="time" name="inicio" value="<%= modifica.viajeInicio %>"  step="10" required>
-          
-        </div>
-        <div class="col text-center ">
-            <input id="fin" type="time" name="fin" value="<%= modifica.viajeFin %>"  step="10" required>
-            
-        </div>
-        <div class="col text-center ">
-              <!-- inicio seleccion chofer -->
-              <select name="conductor" id="conductor" required>
-                  <option value="<%= modifica.idchofer %>" ><%= modifica.usuarioChofer %></option>
-              </select>
-              <!-- fin seleccion chofer -->
-        </div>
-        <div class="col bg-secondary ">
-          <a href="/cita-modificada/<%= modifica.idCita %>" class="btn btn-primary">Guardar</a>    
-        </div>
-        <div class="col bg-primary">
-          <a href="/listar-cita" class="btn btn-secondary">Cancelar</a>  
-        </div>
-
- </div>
-
-  <%- include('templates/footer') %>
+<form action="/editar" method="POST">
+  <% modifica.forEach(cita => { %>
+    
+     
+    <% if (cita.fecha.getMonth() < 10) { 
+     
+     var mes = '0' + (cita.fecha.getMonth() +1) }
+     else{
+       
+        mes = cita.fecha.getMonth()+1;  }%> 
+     
+     <% if (cita.fecha.getDate() < 10) { 
+     
+     var dia = '0' + cita.fecha.getDate() } else{
+       var dia = cita.fecha.getDate()
+     }%>
+  <div class="row">
+    <div class="col text-center ">
+      <input type="date" name="fecha" value="<%= cita.fecha.getFullYear()%>-<%=mes%>-<%=dia%>" disabled>
+      
+    </div>
+    <div class="col text-center ">
+      <%= cita.viajeInicio %>
+    </div>
+    <div class="col text-center ">
+      <%= cita.viajeFin %>
+    </div>
+    <div class="col text-center ">
+      <%= cita.usuarioChofer %>
+    </div>
+    <div class="col bg-secondary ">
+      <a href="/cita-modificada/<%= modifica.idCita %>" class="btn btn-success">Guardar</a>    
+    </div>
+    <div class="col bg-primary">
+      <a href="/listar-cita" class="btn btn-danger">Eliminar</a>  
+      
+    </div>
+  </div>
+  
+  <% }) %>
+  </form>
+  
+                <%- include('templates/footer') %>

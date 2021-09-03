@@ -24,6 +24,7 @@ const client = ldap.createClient({
     
     if(err){
         console.log('error en logueo ldap:  '+err);
+        console.log('encender vpn');
     }else{
         console.log('conexion ldap exitosa');
     }
@@ -38,7 +39,7 @@ router.get('/', function(req,res){
 //fin envia al index
 
 
-//mostras listado de choferes
+//mostras listado de choferes para calendario
 router.get('/calendario', function(req,res){
     conexion.query('SELECT * FROM chofer', (error,results)=>{
         if (error){
@@ -48,9 +49,9 @@ router.get('/calendario', function(req,res){
         }
     });
 });
-//fin mostras listado de choferes
+//fin mostras listado de choferes para calendario
 
-
+//mostras listado de choferes para pagina choferes
 router.get('/choferes-listar', (req,res)=>{
     conexion.query('SELECT * FROM chofer', (error,results)=>{
         if (error){
@@ -62,10 +63,13 @@ router.get('/choferes-listar', (req,res)=>{
         }
     });
 });
+//fin mostras listado de choferes para pagina choferes
 
-router.get('/listar-cita', (req,res)=>{
-    //; 
-    conexion.query('SELECT * FROM `cita` INNER JOIN chofer ON cita.idchofer= chofer.idchofer', (error,results)=>{
+//Listar citas
+
+router.post('/listar-cita', urlencodedParser, function (req, res) {
+    //console.log(req.body.fecha);
+    conexion.query("SELECT * FROM `cita` INNER JOIN chofer ON cita.idchofer= chofer.idchofer WHERE `fecha`= '"+ req.body.fecha +"'", (error,results)=>{
         if (error){
             console.log(error);
         }else{
@@ -75,12 +79,14 @@ router.get('/listar-cita', (req,res)=>{
         }
     });
 });
+//fin listar citas
+
 // inicio nueva cita
 
 router.post('/cita', urlencodedParser, function (req, res) {
     //console.log(req.body);
                
-        res.redirect('/listar-cita');
+        res.redirect('/calendario');
     
     const insertar = "INSERT INTO `cita` (`idCita`, `fecha`, `viajeInicio`, `viajeFin`, `idChofer`) VALUES (NULL, '"+ req.body.fecha +"', '"+ req.body.inicio +"', '"+ req.body.fin +"', '"+ req.body.conductor +"')"; 
    conexion.query(insertar, (error,results)=>{
@@ -101,14 +107,14 @@ router.get('/editar/:idCita', function (req, res) {
     const idCita = req.params.idCita;
    
      const seleccionar = 'SELECT * FROM `cita` INNER JOIN chofer ON cita.idchofer= chofer.idchofer WHERE idCita=?'
-     //'SELECT * FROM `cita` WHERE idCita=?'
-     //
+     
      
    conexion.query(seleccionar, [idCita], (error,results)=>{
+       console.log(results);
             if (error){
                     console.log(error);
                     }else{
-                //console.log(results);
+                console.log(results);
                 res.render('edit', {modifica:results[0]}); 
                         }   
                      });
@@ -118,7 +124,7 @@ router.get('/editar/:idCita', function (req, res) {
 // Fin modificar cita
 
 //Guardar cita modificada
-router.get('/cita-modificada/:idCita', function (req, res) {
+router.post('/cita-modificada/:idCita', urlencodedParser, function (req, res) {
     const idCita = req.params.idCita;
       console.log(req.params);
     const seleccionar = "UPDATE `cita` SET `fecha` = '"+ req.body.fecha +"', `viajeInicio` = '"+ req.body.inicio +"', `viajeFin` = '"+ req.body.fin +"', `idChofer` = '"+ req.body.conductor +"' WHERE `cita`.`idCita` =?";
