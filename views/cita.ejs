@@ -51,7 +51,12 @@
     <%= cita.viajeFin %>
   </div>
   <div class="col text-center ">
-    <%= cita.usuarioChofer %>
+    <!-- inicio seleccion chofer -->
+          <select name="conductor" id="conductor" disabled>
+            <option value="<%= cita.idchofer %>" ><%= cita.usuarioChofer %></option>
+            </select>
+            <!-- fin seleccion chofer -->
+            
   </div>
   <div class="col bg-secondary ">
     <a href="/editar/<%= cita.idCita%>" class="btn btn-success">Modificar</a>    

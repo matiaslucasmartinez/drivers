@@ -115,7 +115,7 @@ router.get('/editar/:idCita', function (req, res) {
                     console.log(error);
                     }else{
                 console.log(results);
-                res.render('edit', {modifica:results[0]}); 
+                res.render('edit', {modifica:results}); 
                         }   
                      });
      });
@@ -124,17 +124,18 @@ router.get('/editar/:idCita', function (req, res) {
 // Fin modificar cita
 
 //Guardar cita modificada
-router.post('/cita-modificada/:idCita', urlencodedParser, function (req, res) {
+
+router.post('/cita-modificada', urlencodedParser, function (req, res) {
     const idCita = req.params.idCita;
-      console.log(req.params);
-    const seleccionar = "UPDATE `cita` SET `fecha` = '"+ req.body.fecha +"', `viajeInicio` = '"+ req.body.inicio +"', `viajeFin` = '"+ req.body.fin +"', `idChofer` = '"+ req.body.conductor +"' WHERE `cita`.`idCita` =?";
+      console.log(req.body);
+    const seleccionar = "UPDATE `cita` SET `fecha` = '"+ req.body.fecha +"', `viajeInicio` = '"+ req.body.inicio +"', `viajeFin` = '"+ req.body.fin +"', `idChofer` = '"+ req.body.conductor +"' WHERE `cita`.`idCita` ='" + req.body.idCita +"'";
     
-    conexion.query(seleccionar, [idCita], (error,results)=>{
+    conexion.query(seleccionar, (error,results)=>{
         if (error){
             console.log(error);
         }else{
             // console.log(results);
-            res.redirect('/listar-cita'); 
+            res.redirect('/calendario'); 
         }
     });
 
@@ -153,7 +154,7 @@ router.get('/eliminar/:idCita', function (req, res) {
             console.log(error);
         }else{
             
-             res.redirect('/listar-cita');
+             res.redirect('/calendario');
         }
     });
 
