@@ -38,10 +38,42 @@ router.get('/', function(req,res){
 }); 
 //fin envia al index
 
+//Inicio Alta Chofer
+router.post('/altaChofer', urlencodedParser, function(req,res){
+    const insertarChofer = "INSERT INTO `Chofer`(`IdChofer`, `UsuarioRed`, `FechaAlta`, `IdUsuarioAlta`, `FechaModificacion`, `IdUsuarioModificacion`, `IdEstadoChofer`, `NombreChofer`, `Apellidochofer`, `CelularChofer`) VALUES (NULL,'"+ req.body.usuarioChofer + "','"+ req.body.fechaActual +"', '"+ req.body.idUsuarioAlta + "', NULL, NULL, '"+req.body.idEstadoChofer+"', '"+req.body.nombreChofer+"', '"+req.body.apellidoChofer+"', '"+req.body.celularChofer+"')"
+    conexion.query(insertarChofer, (error, results)=>{
+    if(error){
+        console.log('Error en isertar chofer' + error);
+    }
+})
+res.redirect('/choferes-listar');
+}); 
+//fin Alta Chofer
+
+//comienzo Eliminar Chofer
+router.get('/eliminar-chofer/:IdChofer', function (req, res) {
+    const idChofer = req.params.IdChofer;
+      
+    const eliminarChofer = "DELETE FROM `Chofer` WHERE `Chofer`.`IdChofer` =?";
+    
+    conexion.query(eliminarChofer, [idChofer], (error,results)=>{
+        if (error){
+            console.log(error);
+        }else{
+            
+             res.redirect('/choferes-listar');
+        }
+    });
+
+
+});
+//fin Eliminar Chofer
+
 
 //mostras listado de choferes para calendario
 router.get('/calendario', function(req,res){
-    conexion.query('SELECT * FROM chofer', (error,results)=>{
+    
+    conexion.query('SELECT * FROM Chofer', (error,results)=>{
         if (error){
             throw error;
         }else{
@@ -51,9 +83,10 @@ router.get('/calendario', function(req,res){
 });
 //fin mostras listado de choferes para calendario
 
-//mostras listado de choferes para pagina choferes
+//mostrar listado de choferes para pagina choferes
 router.get('/choferes-listar', (req,res)=>{
-    conexion.query('SELECT * FROM chofer', (error,results)=>{
+    const listarChoferes = "SELECT `IdChofer`, `UsuarioRed`, `NombreChofer`, `Apellidochofer`, `CelularChofer` FROM `Chofer`"
+    conexion.query(listarChoferes, (error,results)=>{
         if (error){
             throw error;
         }else{
@@ -83,12 +116,12 @@ router.post('/listar-cita', urlencodedParser, function (req, res) {
 
 // inicio nueva cita
 
-router.post('/cita', urlencodedParser, function (req, res) {
+router.post('/Viaje', urlencodedParser, function (req, res) {
     //console.log(req.body);
                
         res.redirect('/calendario');
     
-    const insertar = "INSERT INTO `cita` (`idCita`, `fecha`, `viajeInicio`, `viajeFin`, `idChofer`) VALUES (NULL, '"+ req.body.fecha +"', '"+ req.body.inicio +"', '"+ req.body.fin +"', '"+ req.body.conductor +"')"; 
+    const insertar = "INSERT INTO `Viaje` (`idViaje`, `FechaDesde`, `FechaHasta`, `idChofer`, `idVehiculo`, `Detalle`, `idSolicitante`, `idEstadoViaje`, `FechaAlta`, `idUsuarioAlta`, `FechaModificacion`, `idUsuarioModificacion`) VALUES (NULL, '"+ req.body.fechaDesde +"', '"+ req.body.fechaHasta +"', '"+ req.body.chofer +"','"+ req.body.vehiculos +"', '"+ req.body.detalleViaje +"', '"+ req.body.idSolicitante +"', '"+ req.body.idEstadoViaje +"', '1980-09-17', '"+ req.body.idUsuarioAlta +"', '"+ req.body.idUsuarioAlta +"', '1979-03-25', '"+ req.body.idUsuarioModificacion +"')"; 
    conexion.query(insertar, (error,results)=>{
        if (error){
            console.log(error);
@@ -128,7 +161,7 @@ router.get('/editar/:idCita', function (req, res) {
 router.post('/cita-modificada', urlencodedParser, function (req, res) {
     const idCita = req.params.idCita;
       console.log(req.body);
-    const seleccionar = "UPDATE `cita` SET `fecha` = '"+ req.body.fecha +"', `viajeInicio` = '"+ req.body.inicio +"', `viajeFin` = '"+ req.body.fin +"', `idChofer` = '"+ req.body.conductor +"' WHERE `cita`.`idCita` ='" + req.body.idCita +"'";
+    const seleccionar = "UPDATE `cita` SET `fecha` = '"+ req.body.fecha +"', `viajeInicio` = '"+ req.body.inicio +"', `viajeFin` = '"+ req.body.fin +"', `idChofer` = '"+ req.body.conductor +"' WHERE `cita`.`idCita` ='" + req.body.id +"'";
     
     conexion.query(seleccionar, (error,results)=>{
         if (error){

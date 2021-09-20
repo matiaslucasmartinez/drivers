@@ -1,5 +1,11 @@
  <%- include('templates/cabecera', {tituloweb: 'Página de inicio'}) %>
- <script>const results = require('../routes/route');</script>
+ <script>
+   //const drivers = require('../routes/choferes');
+ const results = require('../routes/route');
+//  var f = new Date();
+//  var diaActual=f.getFullYear()  + "-" + (f.getMonth() +1) + "-" + f.getDate();
+                    
+</script>
     <!-- Inicio Ventana Modal -->
 <!-- Button trigger modal -->
   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#evento">Nuevo Viaje</button> 
@@ -14,24 +20,87 @@
               </div>
               <div class="modal-body">
                 
-                <form id="eventTitleInput" action="/cita" method="POST">
+                <form id="eventTitleInput" action="/Viaje" method="POST">
                   
-                  <label for="fecha">Seleccione la fecha : </label><input id="fecha" name="fecha" type="date" value="date" required/> 
-                    <label> Hora Inicio Viaje</label><input id="inicio" type="time" name="inicio" value="11:45:00"  step="10" required>
-                    <label> Hora Fin Viaje</label><input id="fin" type="time" name="fin" value="11:45:00"  step="10" required>
-                    <!-- inicio seleccion chofer -->
-                    <select name="conductor" id="conductor" required>
-                      <option value="" >Seleccione</option>
-                      <% results.forEach(chofer => { %>
-                        
-                        <option value="<%= chofer.idchofer %>" ><%= chofer.usuarioChofer %></option>
+                  <label for="fecha">Fecha desde : </label><input id="fechaDesde" name="fechaDesde" type="date" value="date" required/> <br>
+                  <label for="fecha">Fecha hasta : </label><input id="fechaHasta" name="fechaHasta" type="date" value="date" required/> <br>
+                  <!-- inicio seleccion chofer -->
+                  <label for="chofer">Seleccione Chofer</label>
+                  <select name="chofer" id="chofer" required>
+                    <option value="" >Seleccione</option>
+                    <% results.forEach(chofer => { %>
                       
-                        
-                      <% }) %></select>
+                      <option value="<%= chofer.idchofer %>" ><%= chofer.usuarioChofer %></option>
                     
-                    <!-- fin seleccion chofer -->
+                      
+                    <% }) %></select> <br>
+                  
+                  <!-- fin seleccion chofer -->
+
+                  <!-- Inicio Listar Vehículos -->
+                  <label for="vehiculos">Listar Vehículos</label>
+                  
+                  <select name="vehiculos" id="vehiculos" required>
+                    <option value="" >Seleccione</option>
+                    <option value="1" >Vehículo 1</option>
+                    <option value="2" >Vehículo 2</option>
+                    <option value="3" >Vehículo 3</option>
+                    </select> <br>
+
+                  <!-- Fin Listar Vehículos -->
+
+                  <!-- Inicio Detalle viaje -->
+                      <textarea name="detalleViaje" id="detalleViaje" cols="20" rows="3" placeholder="Indique detalle del viaje"></textarea> <br>
+                  <!-- Fin Detalle viaje -->
+
+                  <!-- Inicio idSolicitante -->
+                  <label for="idSolicitante">Solicitante</label>
+                  <select name="idSolicitante" id="idSolicitante" required>
+                    <option value="" >Seleccione</option>
+                    <option value="1" >Solicitante 1</option>
+                    <option value="2" >Solicitante 2</option>
+                    <option value="3" >Solicitante 3</option>
+                    </select> <br>
+                  <!-- Fin idSolicitante -->
+
+                  <!-- Inicio idEstadoViaje -->
+                  <label for="idEstadoViaje">Estado del Viaje</label>
+                  <select name="idEstadoViaje" id="idEstadoViaje" required>
+                    <option value="1" >Libre</option>
+                    <option value="2" >Ocupado</option>
+                    </select> <br>
+                  <!-- Fin idEstadoViaje -->
+
+                  <!-- Inicio Fecha atual -->
+                  <label>Fecha actual</label>
+                  
+                  <script>
+                    const f = new Date();
+                     document.write(f.getFullYear()  + "-" + (f.getMonth() +1) + "-" + f.getDate());
+                    </script> <br>
+                   <!-- Fin Fecha atual -->
+
+                   <!-- Inicio idUsuarioAlta -->
+                  <input type="text" name="idUsuarioAlta" value="1" hidden>
+                  <!-- Fin idUsuarioAlta -->
+
+                  <!-- Inicio Fecha modificacion -->
+                  <label>Fecha modificacion</label>
+                  
+                  <script>
+                    
+                     document.write(f.getFullYear()  + "-" + (f.getMonth() +1) + "-" + f.getDate());
+                    </script> <br>
+                   <!-- Fin Fecha modificacion -->
+
+                   <!-- Inicio idUsuarioModificacion -->
+                  <input type="text" name="idUsuarioModificacion" value="1" hidden>
+                  <!-- Fin idUsuarioModificacion -->
+
+
+
                     <button id="saveButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exito">Guardar</button>
-                  </form>
+                  </form> 
               </div>
 
               

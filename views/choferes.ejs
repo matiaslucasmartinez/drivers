@@ -1,24 +1,144 @@
 
 <%- include('templates/cabecera', {tituloweb: 'Listado de choferes'}) %>
-<script>const results = require('../routes/route');</script>
+<script>
+const results = require('../routes/choferes');
+
+</script>
  
 
-<table class="table">
-    <thead>
-      <tr>
-        <th scope="col">idchofer</th>
-        <th scope="col">usuarioChofer</th>
-     </tr>
-    </thead>
-    <tbody> 
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-8 ">
+      <h2>Listad Chofer activo</h2>
+       <div class="row">
+          <div class="col-2">
+            usuarioChofer
+          </div>
+          <div class="col-2">
+            Nombre
+          </div>
+          <div class="col-2">
+            Apellido
+          </div>
+          <div class="col-2">
+            Teléfono
+          </div>
+        </div>
+      
       <% results.forEach(chofer => { %>
-       
-        <tr>
-          <th scope="row"><%= chofer.idchofer %></th>
-          <th scope="row"><%= chofer.usuarioChofer %></th>
-        </tr>   
+        
+          <div class="row pt-3">
+            <div class="col">
+              <%= chofer.UsuarioRed %>
+            </div>
+            <div class="col">
+              <%= chofer.NombreChofer %>
+            </div>
+            <div class="col">
+              <%= chofer.Apellidochofer %>
+            </div>
+            <div class="col">
+              <%= chofer.CelularChofer %>
+            </div>
+            <div class="col">
+              <a href="/editar/" class="btn btn-success">Modificar</a>
+            </div>
+            <div class="col">
+              <a href="#choferEliminado"  type="button" class="btn btn-primary" data-bs-toggle="modal" data-IdChofer="<%= chofer.IdChofer %>" data-NombreChofer="<%= chofer.NombreChofer %>" data-ApellidoChofer="<%= chofer.Apellidochofer %>" >Eliminar</a>
+            </div>
+          </div>
+
+           <!-- Inicio modal choferEliminado -->
+         <div class="modal" id="choferEliminado" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Eliminar Chofer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div id="choferActual" class="modal-body">
+                
+                  
+                  <p>Está a punto de eliminar el registro correspondiente a: <%= chofer.NombreChofer %>
+                    <%= chofer.Apellidochofer %> ¿Desea Continuar?</p>
+                
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+               
+                  
+                  <a href="/eliminar-chofer/<%= chofer.IdChofer %>" class="btn btn-danger">Sí</a>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Fin modal choferEliminado -->
+      
         <% }) %>
-    </tbody>
-  </table>
+    
+      </div>
+ 
+      <div class="col-4 bg-secondary">
+        <h2>Alta Chofer nuevo</h2>
+        <form action="altaChofer" method="POST">
+          <div class="row pt-3"><input type="text" name="usuarioChofer" placeholder="Ingrese el usuario de red" required></div>
+          <div class="row pt-3"><input type="text" name="nombreChofer" placeholder="Ingrese nombre" required></div>
+            
+          
+          <div class="row pt-3"><input type="text" name="apellidoChofer" placeholder="Ingrese apellido" required></div>
+          <div class="row pt-3"><input type="text" name="celularChofer" placeholder="Ingrese teléfono celular" required></div>
+           
+          
+          <!-- Inicio Fecha Alta -->
+          <input type=date name="fechaActual" id="fechaActual" hidden>
+      <script>
+        document.getElementById('fechaActual').value = new Date().toISOString().substring(0, 10);
+        </script>
+      <!-- Fin Fecha Alta -->
+      
+      <!-- Inicio idUsuarioAlta -->
+      <input type="text" name="idUsuarioAlta" value="1" hidden>
+      <!-- Fin idUsuarioAlta -->
+      
+      <!-- Inicio Fecha Modificación -->
+      <input type=date name="fechaModificacion" id="fechaModificacion" hidden>
+      <script>
+        document.getElementById('fechaModificacion').value = new Date().toISOString().substring(0, 10);
+        </script>
+      
+      <!-- Fin Fecha Modificación -->
+      <!-- Inicio idUsuarioModificacion -->
+      <input type="text" name="idUsuarioModificacion" value="1" hidden>
+      <!-- Fin idUsuarioModificacion -->
+      <!-- Inicio idEstadoChofer -->
+      <input type="text" name="idEstadoChofer" value="1" hidden>
+      <!-- Fin idEstadoChofer -->
+      <button class="btn btn-primary m-3" data-toggle="modal" data-target="#choferGuardado">Guardar</button>
+      <!-- Inicio modal choferGuardado -->
+      <div class="modal" id="choferGuardado" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Fin modal choferGuardado -->
+    </form>
+  </div>
+</div>
+  </div>
 
   <%- include('templates/footer') %>
