@@ -20,7 +20,7 @@ const client = ldap.createClient({
     console.log('Error en cliente ldap:  '+err);
   });
 
-  client.bind('webgdv', 'yU4yI5nY6nJ1_zS3z', (err) => {
+  client.bind(process.env.UUARIOLDAP, process.env.SECRETOLDAP, (err) => {
     
     if(err){
         console.log('error en logueo ldap:  '+err);
@@ -37,13 +37,14 @@ router.get('/', function(req,res){
     res.render('index');
 }); 
 //fin envia al index
-
+// ***************************************** CHOFER **********************************************
 //Inicio Alta Chofer
 router.post('/altaChofer', urlencodedParser, function(req,res){
-    const insertarChofer = "INSERT INTO `Chofer`(`IdChofer`, `UsuarioRed`, `FechaAlta`, `IdUsuarioAlta`, `FechaModificacion`, `IdUsuarioModificacion`, `IdEstadoChofer`, `NombreChofer`, `Apellidochofer`, `CelularChofer`) VALUES (NULL,'"+ req.body.usuarioChofer + "','"+ req.body.fechaActual +"', '"+ req.body.idUsuarioAlta + "', NULL, NULL, '"+req.body.idEstadoChofer+"', '"+req.body.nombreChofer+"', '"+req.body.apellidoChofer+"', '"+req.body.celularChofer+"')"
+    console.log(req.body);
+    const insertarChofer = "INSERT INTO `Chofer`(`IdChofer`, `UsuarioRed`, `FechaAlta`, `IdUsuarioAlta`, `FechaModificacion`, `IdUsuarioModificacion`, `IdEstadoChofer`, `NombreChofer`, `Apellidochofer`, `CelularChofer`) VALUES (NULL,'"+ req.body.usuarioChofer + "','"+ req.body.fechaAlta +"', '"+ req.body.idUsuarioAlta + "', NULL, NULL, '"+req.body.idEstadoChofer+"', '"+req.body.nombreChofer+"', '"+req.body.apellidoChofer+"', '"+req.body.celularChofer+"')"
     conexion.query(insertarChofer, (error, results)=>{
     if(error){
-        console.log('Error en isertar chofer' + error);
+        console.log('Error en insertar chofer' + error);
     }
 })
 res.redirect('/choferes-listar');
@@ -69,19 +70,25 @@ router.get('/eliminar-chofer/:IdChofer', function (req, res) {
 });
 //fin Eliminar Chofer
 
-
-//mostras listado de choferes para calendario
-router.get('/calendario', function(req,res){
-    
-    conexion.query('SELECT * FROM Chofer', (error,results)=>{
+//comienzo Modificar Chofer
+router.post('/modificar-chofer/:IdChofer', urlencodedParser, function (req, res) {
+    const idChofer = req.params.IdChofer;
+    console.log(req.body);
+      
+    const modificarChofer = "UPDATE `Chofer` SET `UsuarioRed`='"+ req.body.usuarioModificado +"', `FechaModificacion`='"+ req.body.fechaModificacion +"',`IdUsuarioModificacion`='"+ req.body.idUsuarioModificacion +"',`NombreChofer`='"+ req.body.nombreModificado +"',`Apellidochofer`='"+ req.body.apellidoModificado +"',`CelularChofer`='"+ req.body.celularModificado +"' WHERE `Chofer`.`IdChofer` =?";
+                            
+    conexion.query(modificarChofer, [idChofer], (error,results)=>{
         if (error){
-            throw error;
+            console.log(error);
         }else{
-    res.render('calendario', {results:results});
+            
+             res.redirect('/choferes-listar');
         }
     });
+
+
 });
-//fin mostras listado de choferes para calendario
+//fin Modificar Chofer
 
 //mostrar listado de choferes para pagina choferes
 router.get('/choferes-listar', (req,res)=>{
@@ -97,6 +104,24 @@ router.get('/choferes-listar', (req,res)=>{
     });
 });
 //fin mostras listado de choferes para pagina choferes
+
+// ***************************************** CALENDARIO **********************************************
+
+//mostras listado de choferes para calendario
+router.get('/calendario', function(req,res){
+    
+    conexion.query("SELECT * FROM `Chofer`", (error,results)=>{
+        
+        if (error){
+            throw error;
+        }else{
+            console.log(results);
+    res.render('calendario', {results:results});
+        }
+    });
+});
+//fin mostras listado de choferes para calendario
+
 
 //Listar citas
 
