@@ -12,24 +12,58 @@ router.get('/login', function(req,res){
 })
 
 // Inicio de ldap para logueo en AD
+router.post('/login-send', urlencodedParser, function(req,res){
+    console.log(req.body); 
+    let usuario = req.body.usuario;
+    let password = req.body.password;
+    
 const client = ldap.createClient({
     url: ['ldap://10.0.0.4:3268']
   });
   
-  client.on('error', (err) => {
-    console.log('Error en cliente ldap:  '+err);
-  });
+  
 
   client.bind(process.env.UUARIOLDAP, process.env.SECRETOLDAP, (err) => {
     
     if(err){
         console.log('error en logueo ldap:  '+err);
-        console.log('encender vpn');
+        
     }else{
         console.log('conexion ldap exitosa');
     }
-  }); 
-//buscar la parte que valida al usuario
+  });  
+  //buscar la parte que valida al usuario
+  const opts = {
+    filter: '(&(SAMAccountname={0})(|(memberOf=CN= GDV_OPERADOR,OU=Aplicaciones,DC=andis,DC=gob,DC=ar)(memberOf=CN= GDV_SUPERVISOR,OU=Aplicaciones,DC=andis,DC=gob,DC=ar)(memberOf=CN= GDV_ADMINISTRADOR,OU=Aplicaciones,DC=andis,DC=gob,DC=ar)))',
+    scope: 'sub',
+    attributes: ['ou', 'dc', 'cn']
+  };
+  
+  client.search('OU=Usuarios,DC=andis,DC=gob,DC=ar', opts, (err, res) => {
+    if (err){
+        console.log('error en la búsqueda ')+ err };
+  
+    res.on('searchRequest', (searchRequest) => {
+      console.log('searchRequest: ', searchRequest.messageID);
+    });
+    res.on('searchEntry', (entry) => {
+      console.log('entry: ' + JSON.stringify(entry.object));
+    });
+    res.on('searchReference', (referral) => {
+      console.log('referral: ' + referral.uris.join());
+    });
+    res.on('error', (err) => {
+      console.error('error: ' + err.message);
+    });
+    res.on('end', (result) => {
+      console.log('status: ' + result.status);
+    });
+  });
+
+  
+});
+
+
 // Fin de ldap para logueo en AD
 
 //envia al index

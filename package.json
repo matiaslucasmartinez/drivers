@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "fullcalendar": "^5.8.0",
     "jquery": "^3.6.0",
+    "ldap-authentication": "^2.2.9",
     "ldapjs": "^2.3.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.9"
